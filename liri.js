@@ -1,44 +1,42 @@
 require("dotenv").config();
-var axios = require("axios");
 var fs = require("fs");
 var keys = require("./keys.js");
 var Spotify = require('node-spotify-api');
 var request = require("request");
 
 
-
 var search = process.argv[2];
 var term = process.argv.slice(3).join(" ");
 
-function main(){
-if (search === "spotify-this-song" && term) {
-  console.log("Searching for Song");
-  findSong(term);
-}
-else if (search === "movie-this" && term) {
-    console.log("Searching for Movie");
-   findMovie(term);
-}
-else if (search === "spotify-this-song" && !term){
-    console.log("Spotifying 'The Sign'");
-    term = "The Sign ace of base";
-    findSong(term);
-}
-else if (search === "movie-this" && !term) {
-    console.log("Searching for 'Mr. Nobody'");
-    term = "Mr. Nobody";
-    findMovie(term);
-}
-else if (search === "do-what-it-says") {
-  console.log("Spotifying 'I Want It That Way'");
-  readRandom();
-  console.log(term);
-}
-else {
-    console.log("Please enter a valid command.")
-}
+function main() {
+    if (search === "spotify-this-song" && term) {
+        console.log("Searching for Song");
+        findSong(term);
+    }
+    else if (search === "movie-this" && term) {
+        console.log("Searching for Movie");
+        findMovie(term);
+    }
+    else if (search === "spotify-this-song" && !term) {
+        console.log("Spotifying 'The Sign'");
+        term = "The Sign ace of base";
+        findSong(term);
+    }
+    else if (search === "movie-this" && !term) {
+        console.log("Searching for 'Mr. Nobody'");
+        term = "Mr. Nobody";
+        findMovie(term);
+    }
+    else if (search === "do-what-it-says") {
+        console.log("Spotifying 'I Want It That Way'");
+        readRandom();
+        console.log(term);
+    }
+    else {
+        console.log("Please enter a valid command.")
+    }
 };
-function grabTerm(search2, term2){
+function grabTerm(search2, term2) {
     search = search2;
     term = term2;
     console.log(term);
@@ -47,21 +45,21 @@ function grabTerm(search2, term2){
 }
 
 function readRandom() {
-    fs.readFile("random.txt", "utf8", function(error, data) {
+    fs.readFile("random.txt", "utf8", function (error, data) {
         if (error) {
-          return console.log(error);
+            return console.log(error);
         }
         var dataArr = data.split(",");
         var search2 = dataArr[0];
         var term2 = dataArr[1];
         grabTerm(search2, term2);
-      
-      });
-      
+
+    });
+
 
 }
 
- function findSong(term) {
+function findSong(term) {
     var spotify = new Spotify(keys.spotify);
     spotify.search({ type: 'track', query: term }, function (err, data) {
         if (err) {
@@ -71,19 +69,19 @@ function readRandom() {
             var results = [
                 "-------------------------------------------------------------",
                 "Artist Name: " + data.tracks.items[0].album.artists[0].name,
-                "\nSong Name: " + data.tracks.items[0].name, 
+                "\nSong Name: " + data.tracks.items[0].name,
                 "\nPreview URL: " + data.tracks.items[0].album.external_urls.spotify,
                 "\nAlbum Name: " + data.tracks.items[0].album.name
             ].join("\n");
             console.log(results);
         }
     });
-    }
+}
 function findMovie(term) {
-        request(`http://www.omdbapi.com/?t=${term}&y=&plot=short&apikey=trilogy`, function(error, response, body) {
-        
-          if (!error && response.statusCode === 200) {
- 
+    request(`http://www.omdbapi.com/?t=${term}&y=&plot=short&apikey=trilogy`, function (error, response, body) {
+
+        if (!error && response.statusCode === 200) {
+
             var result = [
                 "-------------------------------------------------------------",
                 "Title: " + JSON.parse(body).Title,
@@ -98,10 +96,10 @@ function findMovie(term) {
 
             console.log(result);
 
-          }
-        });               
-            
-    };
-    
+        }
+    });
+
+};
+
 
 main();
